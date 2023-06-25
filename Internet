@@ -1,0 +1,61 @@
+'Open the Internet object
+ Private Declare Function InternetOpen _
+   Lib "wininet.dll" _
+     Alias "InternetOpenA" _
+       (ByVal sAgent As String, _
+        ByVal lAccessType As Long, _
+        ByVal sProxyName As String, _
+        ByVal sProxyBypass As String, _
+        ByVal lFlags As Long) As Long
+
+'Connect to the network
+ Private Declare Function InternetConnect _
+   Lib "wininet.dll" _
+     Alias "InternetConnectA" _
+       (ByVal hInternetSession As Long, _
+        ByVal sServerName As String, _
+        ByVal nServerPort As Integer, _
+        ByVal sUsername As String, _
+        ByVal sPassword As String, _
+        ByVal lService As Long, _
+        ByVal lFlags As Long, _
+        ByVal lContext As Long) As Long
+
+'Get a file using FTP
+ Private Declare Function FtpGetFile _
+   Lib "wininet.dll" _
+     Alias "FtpGetFileA" _
+       (ByVal hFtpSession As Long, _
+        ByVal lpszRemoteFile As String, _
+        ByVal lpszNewFile As String, _
+        ByVal fFailIfExists As Boolean, _
+        ByVal dwFlagsAndAttributes As Long, _
+        ByVal dwFlags As Long, _
+        ByVal dwContext As Long) As Boolean
+
+'Send a file using FTP
+ Private Declare Function FtpPutFile _
+   Lib "wininet.dll" _
+     Alias "FtpPutFileA" _
+       (ByVal hFtpSession As Long, _
+        ByVal lpszLocalFile As String, _
+        ByVal lpszRemoteFile As String, _
+        ByVal dwFlags As Long, _
+        ByVal dwContext As Long) As Boolean
+
+'Close the Internet object
+ Private Declare Function InternetCloseHandle _
+   Lib "wininet.dll" _
+     (ByVal hInet As Long) As Integer
+
+'LinkContent=GetLinkContent(Link)
+Function GetLinkContent(Link)
+  On Error Resume Next
+  GetLinkContent = ""
+  Set oXMLHTTP = CreateObject("MSXML2.ServerXMLHTTP.6.0")
+  oXMLHTTP.Open "GET", Link, False
+  oXMLHTTP.Send
+  TextLink = oXMLHTTP.responseText
+  If (oXMLHTTP.Status = 200) Then GetLinkContent = TextLink
+  Set oXMLHTTP = Nothing
+End Function
